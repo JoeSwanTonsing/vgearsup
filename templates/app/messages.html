@@ -1,0 +1,147 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Messages - {{request.user.username}}</title>
+{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/messaging.css' %}"/>
+<style>
+</style>
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+<div class="spc" style="height: 2rem;"></div>
+
+<div class="container normal">
+	<h3 class="text-center text-white">Messages</h3>
+	<div class="messaging">
+		<div class="inbox_msg">
+			<div class="inbox_people">
+				<div class="headind_srch">
+					<div class="recent_heading">
+						<h4>Recent</h4>
+					</div>
+					{% if contacts %}
+						<div class="srch_bar">
+							<div class="stylish-input-group">
+								<input type="text" class="search-bar searchTerm" placeholder="Search" > <span class="input-group-addon"> <button type="button"> <i class="fa fa-search" aria-hidden="true"></i> </button></span>
+							</div>
+						</div>
+					{% endif %}
+				</div>
+
+				<div class="inbox_chat">
+					{% for c in contacts %}
+						<div class="chat_list" id="item">
+							<a href="{% url 'app:chat' c.id %}" title="Chat with {{c.user.username}}">
+								<div class="chat_people">
+									<div class="chat_img"> <img src="{{c.profile_pic.url}}" alt="sunil"> </div>
+									<div class="chat_ib">
+										<h5><span class="chat_date"><!-- {{m.timestamp|date:"h:i A, d M, Y"}} --></span></h5>
+										<h4>{{c.user.username}}</h4>
+										<!-- <p>Test, which is a new approach to have all solutions astrology under one roof.</p> -->
+									</div>
+								</div>
+							</a>
+						</div>
+					{% empty %}
+						<div class="chat_list_">
+							<div class="chat_people">
+								<div class="chat_img"> <!-- <img src="{{m.sender.profile_pic.url}}" alt="sunil">  --></div>
+								<div class="chat_ib">
+									<h5>You do not have any recent chats.</h5>
+									<p>Your chats and messages with other sellers/buyers will appear here.</p>
+								</div>
+							</div>
+						</div>
+					{% endfor %}				
+				</div>	
+			</div>
+
+			{% if contacts %}
+				<div class="mesgs">
+					<h1 class="text-center" style="font-size: 12rem; color: #1ab18863;"><i class="fa fa-comments-o" aria-hidden="true"></i></h1>
+					<p class="text-center">Click on one of the users on the left tab to start messaging them.</p>
+				</div>
+			{% else %}
+				<div class="mesgs">
+					<h1 class="text-center" style="font-size: 12rem; color: #1ab18863;"><i class="fa fa-comments-o" aria-hidden="true"></i></h1>
+					<p class="text-center">You have no messages.<br/> Once you contact sellers or buyers contact you, messages will appear here.</p>
+				</div>
+			{% endif %}
+
+		</div>      
+	</div>
+</div>
+
+<!-- ADD A MOBILE VERSION HERE class="mobile" -->
+<div class="container mobile">
+	<h3 class="text-center text-white">Messages</h3>
+	<div class="messaging">
+		<div class="inbox_msg">
+			<div class="inbox_people">
+				<div class="headind_srch">
+					<div class="recent_heading">
+						<h4>Recent</h4>
+					</div>
+					<div class="srch_bar">
+						<div class="stylish-input-group">
+							<input type="text" class="search-bar" placeholder="Search" > <span class="input-group-addon"> <button type="button"> <i class="fa fa-search" aria-hidden="true"></i> </button></span>
+						</div>
+					</div>
+				</div>
+
+				<div class="inbox_chat">
+					{% for m in msgs %}
+						{% ifnotequal m.sender request.user.appuser %}
+						<div class="chat_list">
+							<a href="{% url 'app:chat' m.sender.id %}" title="Chat with {{m.sender.user.username}}">
+								<div class="chat_people">
+									<div class="chat_img"> <img src="{{m.sender.profile_pic.url}}" alt="sunil"> </div>
+									<div class="chat_ib">
+										<h5>{{m.sender.user.username}} <span class="chat_date">{{m.timestamp|date:"d M, Y"}}</span></h5>
+										<!-- <p>Test, which is a new approach to have all solutions astrology under one roof.</p> -->
+									</div>
+								</div>
+							</a>
+						</div>
+						{% endifnotequal %}
+					{% empty %}
+						<div class="chat_list_">
+							<div class="chat_people">
+								<div class="chat_img"> <!-- <img src="{{m.sender.profile_pic.url}}" alt="sunil">  --></div>
+								<div class="chat_ib">
+									<h5>You do not have any recent chats.</h5>
+									<p>Your chats and messages with other sellers/buyers will appear here.</p>
+								</div>
+							</div>
+						</div>
+					{% endfor %}				
+				</div>	
+			</div>
+		</div>      
+	</div>
+</div>
+
+{% endblock %}
+
+{% block endimports %}
+<script>
+	jQuery(document).ready(function($){
+		$('.searchTerm').on("keyup",function(e){
+			var query = $(this).val().toLowerCase();
+			$("#item .chat_ib").filter(function(){
+				var $this = $(this);
+				if($this.text().toLowerCase().indexOf(query) === -1)
+					$this.closest('#item').fadeOut();
+				else $this.closest('#item').fadeIn();
+			});
+		});
+	});
+</script>
+{% endblock endimports %}

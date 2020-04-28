@@ -1,0 +1,122 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block head %}
+	<title>
+		Product Details
+	</title>
+{% endblock %}
+
+{% block header %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="{% static 'css/viewproducts.css' %}" rel="stylesheet">
+<link href="{% static 'css/instrumentlist.css' %}" rel="stylesheet">
+<style type="text/css">
+	.login_signup_lnk{
+		color:black;
+	}
+	.login_signup_lnk:hover{
+		color:black;
+		text-decoration: none;
+	}
+	@media (max-width: 768px){
+		.product_contianer{
+			margin-top: 20%;
+		    padding: 4%;
+    		border-radius: unset;
+    		overflow: hidden;
+		}
+	}
+</style>
+{% endblock %}
+
+{% block content %}
+	<!-- OPEN DETAILS ABOUT THE CLICKED PRODUCT -->
+	<div class="container product_contianer">
+		{% for i in inst %}
+			<div class="row">
+				<div class="col-sm-12 col-md-6">
+					<img class="product_image img-responsive" src="{{i.photo.url}}">
+				</div>
+				<div class="col-sm-12 col-md-6">
+					<p class="product_title"> {{i.name}}</p>
+					<p class="product_price"> &#x20b9; {{i.price}}.00</p>
+					<p class="product_condition">Condition: <span class="item_cond"> {{i.condition}}</span></p>
+					<div class="spc" style="height: 5px;"></div>
+					<p class="product_brand_category">Brand: <span class="highlight">{{i.brand}}</span> &nbsp; Category: <span class="highlight">{{i.category}}</span></p>
+					<p class="posted_by_on"> Posted By: {{i.seller}} &nbsp; Posted On: 24:10:2019</p>
+					<div class="spc" style="height: 5px;"></div>
+					<p class="desc_title">Description</p>
+					<div class="myhr"></div>
+					<p class="product_description">{{i.description}}</p>
+				</div>
+			</div>
+			<div class="spc" style="height: 20px;"></div>
+			<hr>
+
+			<div class="row  btns">
+				<div class="col-sm-12 col-md-6">
+					<div class="favBTN">
+						<a href="" id="item_sold" name="item_sold" class="btn btn-success mbtn"><i class="fa fa-check" aria-hidden="true"></i> &nbsp; Mark This Item as Sold </a>
+					</div>
+				</div>
+				<div class="col-sm-12 col-md-6">
+					<div class="contactBTN">
+						<a href="" id="item_delete" name="item_delete" class="btn btn-danger mbtn"><i class="fa fa-trash-o" aria-hidden="true"></i> &nbsp; Delete this AD </a>
+					</div>
+				</div>
+			</div>
+
+		{% endfor %}
+	</div>
+
+
+	<!-- RELATED ITEMS WILL LOAD HERE -->
+
+	<div class="container listing">
+
+	<div class="row">
+		{% if adcount > 1 %}
+		<div class="col-sm-12 head">
+			<h4> Your other ADs</h4>
+		</div>
+			{% for r in related_items %}
+				<div class="col-md-4">
+					<figure class="card card-product">
+						<div class="img-wrap"><img src="{{r.photo.url}}"></div>
+						<figcaption class="info-wrap">
+							<h4 class="title">{{r.name}}</h4>
+							<p class="desc">{{r.description}}</p>
+							<div class="rating-wrap">
+								<div class="label-rating">Brand: <strong> {{r.brand}}</strong></div>
+								<div class="label-rating">Category: <strong> {{r.category}}</strong> </div>
+							</div>
+						</figcaption>
+						<div class="bottom-wrap">
+							<a href="/viewmyad/{{r.id}}" class="btn btn-sm btn-success float-right">View Item</a>	
+							<div class="price-wrap h5">
+								<span class="price-new">&#x20b9;{{r.price}}.00</span><!--  <del class="price-old">$1980</del> -->
+							</div>
+						</div>
+					</figure>
+				</div>
+			{% endfor %}
+		{% else %}
+			<div class="col-md-12">
+		    	<div class="econtent">
+		       		<div class="ehead">
+		       			<h3> Unavailable </h3>
+		       		</div>        
+		       		<div class="ebody">
+		       			<p> There are no other items under this category. Please see these ADs. </p>
+		       		</div>
+		       	</div>
+		    </div>
+		{% endif %}
+	</div>
+</div>
+
+{% endblock %}
+
+{% block endimports %}
+{% endblock endimports %}

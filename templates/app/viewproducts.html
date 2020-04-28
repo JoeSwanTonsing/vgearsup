@@ -1,0 +1,170 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block head %}
+	<title>
+		Product Details
+	</title>
+{% endblock %}
+
+{% block header %}
+<link href="{% static 'css/viewproducts.css' %}" rel="stylesheet">
+<link href="{% static 'css/instrumentlist.css' %}" rel="stylesheet">
+<style type="text/css">
+	.message{
+    	position: relative;
+    	top: 4rem;
+	}
+	.login_signup_lnk{
+		color:black;
+	}
+	.login_signup_lnk:hover{
+		color:black;
+		text-decoration: none;
+	}
+	@media (max-width: 768px){
+		.product_contianer{
+			margin-top: 20%;
+		    padding: 4%;
+    		border-radius: unset;
+    		overflow: hidden;
+		}
+	}
+</style>
+{% endblock %}
+
+{% block content %}
+	<!-- Message_if_any -->
+	<div class="message">
+    	{% for message in messages %}
+      	<div class="alert {{ message.tags }} alert-dismissible" role="alert">
+        	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          		<span aria-hidden="true">&times;</span>
+        	</button>
+        	{{ message }}
+      	</div>
+    	{% endfor %}
+  	</div>
+	<!-- OPEN DETAILS ABOUT THE CLICKED PRODUCT -->
+	<div class="container product_contianer">
+		{% for i in inst %}
+			<div class="row">
+				<div class="col-sm-12 col-md-6">
+					<img class="product_image img-responsive" src="{{i.photo.url}}">
+				</div>
+				<div class="col-sm-12 col-md-6">
+					<p class="product_title"> {{i.name}}</p>
+					<p class="product_price"> &#x20b9; {{i.price}}.00</p>
+					<p class="product_condition">Condition: <span class="item_cond"> {{i.condition}}</span></p>
+					<div class="spc" style="height: 5px;"></div>
+					<p class="product_brand_category">Brand: <span class="highlight">{{i.brand}}</span> &nbsp; Category: <span class="highlight">{{i.category}}</span></p>
+					<p class="posted_by_on"> Posted By: {{i.seller}} ,&nbsp; Posted On: {{i.timestamp|date:"d M Y"}}</p>
+					<div class="spc" style="height: 5px;"></div>
+					<p class="desc_title">Description</p>
+					<div class="myhr"></div>
+					<p class="product_description">{{i.description}}</p>
+				</div>
+			</div>
+			<div class="spc" style="height: 20px;"></div>
+			<hr>
+
+			{% if request.user.is_authenticated %}
+				<div class="row">
+					<div class="col-sm-12 col-md-12">
+						<div class="auction_section">
+							{% ifnotequal i.seller request.user.appuser %}
+								<p class="posted_by_on"> If you like this product, you can add it to your Favourites or you may contact the seller for purchase and more information.</p>	
+							{% else %}
+								<p class="">This is an AD posted by you. You may mark the item as Sold or delete the post.</p> 
+							{% endifnotequal %}
+						</div>
+					</div>
+				</div>
+				<div class="row  btns">
+					<div class="col-sm-12 col-md-6">
+						{% ifequal i.seller request.user.appuser %}
+						{% else %}
+							<div class="favBTN">
+								<a href="{% url 'app:addtofavouritesaction' i.id %}" id="addTofav" class="btn btn-primary mbtn" title="Add this item to your Favourites"><i class="fa fa-heart" aria-hidden="true"></i>&nbsp; Add to favourites </a>
+							</div>
+						{% endifequal %}
+					</div>
+
+					<div class="col-sm-12 col-md-6">
+					<!-- Check if Seller is the user itself -->
+						{% ifequal i.seller request.user.appuser %}
+							<div class="contactBTN">
+								<a href="" class="btn btn-success mbtn"><i class="fa fa-sitemap" aria-hidden="true"></i> &nbsp; Manage AD </a>
+							</div>
+						{% else %} <!-- If user is not the seller -->
+							<div class="contactBTN">
+								<a href="{% url 'app:user_information' i.seller.id %}" id="contactbtn" name="contact_btn" class="btn btn-success mbtn" title="View {{i.seller}}'s Profile"><i class="fa fa-eye" aria-hidden="true"></i> &nbsp; View {{i.seller}}'s Profile </a>
+								<a href="{% url 'app:chat' i.seller.id %}" id="contactbtn" name="contact_btn" class="btn btn-success mbtn" title="Send message to seller"><i class="fa fa-comment" aria-hidden="true"></i> &nbsp; Contact Seller </a>
+							</div>
+						{% endifequal %}
+					</div>
+				</div>
+			{% else %}
+				<div class="row">
+					<div class="col-sm-12 col-md-12">
+						<div class="msg_usr_section">
+							<p> You must be signed in to add to Favourites and contact the seller</p>
+							<p><a href="{% url 'app:getstarted' %}" class="login_signup_lnk"> Please Sign Up or Login to continue. You can Login/Signup from <strong> here </strong> </a></p>
+						</div>
+					</div>
+				</div>
+			{% endif %}
+		{% endfor %}
+	</div>
+
+
+	<!-- RELATED ITEMS WILL LOAD HERE -->
+	{% if adcount > 1 %}
+	<div class="container listing">
+	<div class="row">
+		<div class="col-sm-12 head">
+			<h4> You might also want to view these similar products</h4>
+		</div>
+	</div>
+	<div class="row">
+		
+		{% for r in related_items %}
+			<div class="col-md-4">
+				<figure class="card card-product">
+					<div class="img-wrap"><img src="{{r.photo.url}}"></div>
+					<figcaption class="info-wrap">
+						<h4 class="title">{{r.name}}</h4>
+						<p class="desc">{{r.description}}</p>
+						<div class="rating-wrap">
+							<div class="label-rating">Brand: <strong> {{r.brand}}</strong></div>
+							<div class="label-rating">Category: <strong> {{r.category}}</strong> </div>
+							<div class="label-rating">Sold By: <strong> {{r.seller}}</strong> </div>
+						</div>
+					</figcaption>
+					<div class="bottom-wrap">
+						<a href="{% url 'app:viewproducts' r.id %}" class="btn btn-sm btn-success float-right">View Item</a>	
+						<div class="price-wrap h5">
+							<span class="price-new"><i class="fa fa-inr" aria-hidden="true"></i>{{r.price}}.00</span>
+						</div>
+					</div>
+				</figure>
+			</div>
+		{% empty %}
+			<div class="col-md-12">
+	    		<div class="econtent">
+	       			<div class="ehead">
+	       				<h3> Unavailable </h3>
+	       			</div>        
+	       			<div class="ebody">
+	       				<p> There are no other items under this category. Please see these ADs. </p>
+	       			</div>
+	       		</div>
+	    	</div>
+		{% endfor %}
+	</div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block endimports %}
+{% endblock endimports %}

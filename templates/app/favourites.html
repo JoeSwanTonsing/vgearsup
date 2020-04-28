@@ -1,0 +1,24 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block head %}
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+<div class="contianer" style="margin-top:6%">
+	{% for fav in fav_list %}
+		<div class="col-sm-12 col-md-12">
+			<h4> {{fav.instrument.name}}</h4>
+			<h4> {{fav.instrument.seller}}</h4>
+			<h4> {{fav.instrument.price}}</h4>
+			<h4> <img src="{{fav.instrument.photo.url}}"></h4>
+		</div>
+	{% endfor %}
+</div>
+{% endblock %}
+
+{% block endimports %}
+{% endblock endimports %}

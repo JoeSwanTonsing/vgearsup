@@ -1,0 +1,106 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>VGearsup - Login or Signup</title>
+{% endblock %}
+
+{% block head %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/login_reg_style.css'%}">
+{% endblock %}
+
+{% block header %}
+	<header class="bg-pri text-white login_reg_header">
+    <div class="container text-center">
+      <h1 class="headTitle Titlelogo">Signup or Login</h1>
+      <p class="lead headSub">Login to existing account or Signup to do more with your VGearsup account!</p>
+    </div>
+  </header>
+{% endblock %}
+
+{% block content %}
+  <div class="message">
+    {% for message in messages %}
+      <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+
+	<section id="login_reg_section">
+    <div class="form">
+      
+    <ul class="tab-group">
+      <li class="tab active"><a href="#signup">Sign Up</a></li>
+      <li class="tab"><a href="#login">Log In</a></li>
+    </ul>
+      
+    <div class="tab-content">
+      
+      <div id="signup">   
+        <h1>Sign Up for Free</h1>      
+          <form name="signupform" action="{% url 'app:register_action' %}" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+            <div class="top-row">
+              <div class="field-wrap">
+                <label>First Name<span class="req">*</span></label>
+                <input id="firstname" type="text" name="firstname" required autocomplete="off" />
+              </div>
+              <div class="field-wrap">
+                <label>Last Name<span class="req">*</span></label>
+                <input id="lastname" type="text" name="lastname" required autocomplete="off"/>
+              </div>
+            </div>
+            <div class="field-wrap">
+              <label>Email Address<span class="req">*</span></label>
+              <input id="email" type="email" name="email" required autocomplete="off"/>
+            </div>
+            <div class="field-wrap">
+              <label>Set Username<span class="req">*</span></label>
+              <input id="username" type="text" name="username" required autocomplete="off"/>
+            </div>
+            <div class="field-wrap">
+              <label>Phone Number<span class="req">*</span></label>
+              <input id="phone" type="number" name="phone" required autocomplete="off"/>
+            </div>
+            <div class="field-wrap">
+              <label>Set A Password<span class="req">*</span></label>
+              <input id="password" type="password" name="password" required autocomplete="off"/>
+            </div>
+            <div class="field-wrap">
+              <label>Confirm Password<span class="req">*</span></label>
+              <input id="pass2" type="password" name="pass2" required autocomplete="off"/>
+            </div>
+            <span id="message"></span>
+            <button type="submit" class="button button-block enableOnMatch" disabled='disabled'/>Get Started</button>
+          </form>
+        </div>
+        
+        <div id="login">   
+          <h1>Welcome Back!</h1>
+          <form action="{% url 'app:login_action' %}" method="post">
+            {% csrf_token %}
+            <div class="field-wrap">
+              <label>Username<span class="req">*</span></label>
+              <input id="lusername" type="text" name="username" required autocomplete="off"/>
+            </div>
+            <div class="field-wrap">
+              <label>Password<span class="req">*</span></label>
+              <input id="lpassword" type="password" name="password" required autocomplete="off"/>
+            </div>
+            <p class="forgot"><a href="#">Forgot Password?</a></p>
+            <button class="button button-block"/>Log In</button>
+          </form>
+        </div>
+
+      </div>
+    </div> 
+  </section>
+{% endblock %}
+
+{% block endimports %}
+  <script src="{% static 'js/login_reg.js' %}"></script>
+{% endblock endimports%}
