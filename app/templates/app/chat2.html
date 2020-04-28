@@ -1,0 +1,22 @@
+{% for m in msgs %}
+  <div data-msg-id="{{m.id}}">
+    {% ifnotequal m.sender request.user.appuser %}
+      <div class="incoming_msg">
+        <div class="incoming_msg_img"> <img src="{{m.sender.profile_pic.url}}" alt="{{m.sender}}"> </div>
+        <div class="received_msg">
+          <div class="received_withd_msg">
+            <p>{{m.chattext.text}}</p>
+            <span class="time_date"> {{m.timestamp}}</span>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="outgoing_msg">
+        <div class="sent_msg">
+          <p>{{m.chattext.text}}</p>
+          <span class="time_date"> {{m.timestamp}}</span>
+        </div>
+      </div>
+    {% endifnotequal %}
+  </div>
+{% endfor %}

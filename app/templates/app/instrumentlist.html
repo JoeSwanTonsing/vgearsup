@@ -1,0 +1,105 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>VGearsup - {{instcat.title}}</title>
+{% endblock %}
+
+{% block head %}
+<link href="{% static 'css/instrumentlist.css' %}" rel="stylesheet">
+<link href="{% static 'vendor/materialize/css/mymaterialize.css' %}" rel="stylesheet">
+<style type="text/css">
+	#search{
+	  padding-bottom: 0px;
+	}
+	.card .card-image img {
+		height: 290px;
+		object-fit: contain;
+		object-position: center;
+	}
+</style>
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+<div class="container listing">
+	{% if instrument %}
+		<div class="row">
+			<div class="col-md-12 col-sm-12 search">
+				<input class="searchTerm" placeholder="Enter your search term ... e.g: Gibson SG" id="search" />
+			</div>
+		</div>
+	{% endif %}
+	<div class="row">
+		<div class="col-sm-12 head">
+			<h4> Listing all ADs for {{instcat.title}} category</h4>
+		</div>
+	</div>
+	<div class="row">
+		{% if adcount %}
+			{% for i in instrument %}
+				<div class="col-md-4" id="item">
+					<div class="card sticky-action">
+						<div class="card-image waves-effect waves-block waves-light">
+							<img class="activator" src="{{i.photo.url}}">
+						</div>
+						<div class="card-content">
+							<span class="card-title activator grey-text text-darken-4 title">{{i.name}}<i class="material-icons right">more_vert</i></span>
+							<p>Brand: <strong> {{i.brand}}</strong>, Category: <strong> {{i.category}}</strong><br/><strong>&#x20b9;{{i.price}}.00</strong></p>
+						</div>
+						<div class="card-action">
+							{% ifequal i.seller request.user.appuser %}
+								<a href="">Bro You are the seller. Put some useful link here.</a>
+				          		<a href="{% url 'app:viewproducts' i.id %}" title="View AD">View AD</a>
+				          	{% else %}
+				          		<a href="{% url 'app:addtofavouritesaction' i.id %}" title="Add this to your favourites">Add to Favourite</a>
+				          		<a href="{% url 'app:viewproducts' i.id %}" title="View AD">View Item</a>
+				          	{% endifequal %}
+				        </div>
+						<div class="card-reveal">
+							<span class="card-title grey-text text-darken-4">{{i.name}}<i class="material-icons right">close</i></span>
+							<div class="item_details">
+								<p> Brand: <strong> {{i.brand}}</strong>, Category: <strong> {{i.category}}</strong></p>
+								<p> Sold By: <strong> {{i.seller}}</strong> </p>
+								<p> {{i.description}}</p>
+								<p> &#x20b9;{{i.price}}.00</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		{% else %}
+			<div class="col-md-12">
+		    	<div class="econtent">
+		       		<div class="ehead">
+		       			<h3> Unavailable </h3>
+		       		</div>        
+		       		<div class="ebody">
+		       			<p> There are no items under this category. Please try other categories. </p>
+		       		</div>
+		       	</div>
+		    </div>
+		{% endif %}
+	</div>
+</div>
+{% endblock %}
+
+
+{% block endimports %}
+<script>
+	jQuery(document).ready(function($){
+		$('.searchTerm').on("keyup",function(e){
+			var query = $(this).val().toLowerCase();
+			$("#item .title").filter(function(){
+				var $this = $(this);
+				if($this.text().toLowerCase().indexOf(query) === -1)
+					$this.closest('#item').fadeOut();
+				else $this.closest('#item').fadeIn();
+			});
+		});
+	});
+</script>
+<script src="{% static 'vendor/materialize/js/materialize.min.js' %}"></script>
+{% endblock endimports %}

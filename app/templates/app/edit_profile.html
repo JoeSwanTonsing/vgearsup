@@ -1,0 +1,287 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Edit Profile - {{request.user.username}}</title>
+{% endblock %}
+
+{% block head %}
+<style type="text/css">
+	.spc{
+		height:10px;
+	}
+	.editProfileform{
+		border-radius: 0.5rem;
+		margin-top: 7%;
+		padding: 3%;
+		background: #fff;
+	}
+	.img-circle{
+		height: 150px;
+		width: 150px;
+		border-radius: 50%;
+	}
+	.mobileOnlySpc{
+		visibility: hidden;
+	}
+
+	.cancelBtn{
+		margin-left: 5%;
+	    font-weight: 600;
+	    font-size: large;
+	    text-decoration: none;
+	    color: deeppink;
+	}
+	.cancelBtn:hover{
+		color: brown;
+		text-decoration: none;
+	}
+
+	.profile-img .file {
+	    position: relative;
+	    overflow: hidden;
+	    margin-top: -20%;
+	    width: 70%;
+	    border: none;
+	    border-radius: 0;
+	    font-size: 15px;
+	    background: #212529b8;
+	}
+	.profile-img .file input {
+	    position: absolute;
+	    opacity: 0;
+	    right: 0;
+	    top: 0;
+	}
+	.message{
+        position: relative;
+        top: 4rem;
+    }
+    .hide{
+        display: none;
+    }
+    #upload-photo {
+      opacity: 0;
+      position: absolute;
+      z-index: -1;
+    }
+    .lnk{
+        background: rgba(0, 0, 0, 0.03);
+        border: none;
+        border-radius: 20px;
+    }
+
+    .lnk:hover{
+        background: rgba(0, 0, 0, 0.1);
+        text-decoration: underline;
+    }
+
+    label.mybtn {
+        background: #343a4094;
+        color: #fff;
+        width: 70%;
+        padding: 5px;
+        position: relative;
+        top: -20px;
+    }
+	@media (max-width: 767px){
+		.mobileOnlySpc{
+			visibility: visible;
+			height: 10px;
+		}
+		.editProfileform{
+			border-radius: 0px;
+			margin-top: 15%;
+			padding: 15px;
+		}
+	}
+</style>
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+<div class="spc"></div>
+	<div class="message">
+    	{% for message in messages %}
+      		<div class="alert {{ message.tags }} alert-dismissible" role="alert">
+        		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          			<span aria-hidden="true">&times;</span>
+        		</button>
+        		{{ message }}
+      		</div>
+    	{% endfor %}
+  	</div>
+
+<div id="editProfileformContainer">
+    <div class="container editProfileform">
+        <h3>Edit Profile</h3>
+        <hr>
+        <div class="row">
+            <!-- left column -->
+            <div class="col-md-3">
+                <div class="text-center profile-img">
+                	<img src="{{user.appuser.profile_pic.url}}" class="avatar img-circle" alt="avatar" id="output">
+                    <form action="{% url 'app:changedp'%}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="file" name="profile_photo" id="upload-photo" accept="image/*" onchange="loadFile(event)">
+                        <label for="upload-photo" class="mybtn">Change Picture</label>
+                        <button class="lnk hide" type="submit" id="uploadBTN">Update Picture</button>
+                    </form>
+                    <div class="spc"></div>
+                </div>
+            </div>
+
+            <!-- edit form column -->
+            <div class="col-md-9 personal-info">
+                <div class="mobileOnlySpc"></div>
+                <h3>Personal info</h3>
+                <form action="{% url 'app:edit_profile_action' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label">First name:</label>
+                        <div class="col-lg-8">
+                            <input name="firstname" class="form-control" type="text" placeholder="{{request.user.first_name}}" value="{{request.user.first_name}}" required autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label">Last name:</label>
+                        <div class="col-lg-8">
+                            <input name="lastname" class="form-control" type="text" placeholder="{{request.user.last_name}}" value="{{request.user.last_name}}" required autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label">Username:</label>
+                        <div class="col-lg-8">
+                            <input name="username" class="form-control" type="text" placeholder="{{request.user.username}}" value="{{request.user.username}}" required autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label">Email:</label>
+                        <div class="col-lg-8">
+                            <input name="email" class="form-control" type="email" placeholder="{{request.user.email}}" value="{{request.user.email}}" required autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Phone:</label>
+                        <div class="col-md-8">
+                            <input name="phone" class="form-control" type="number" placeholder="{{user.appuser.contact}}" value="{{user.appuser.contact}}" required autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Address/Location:</label>
+                        <div class="col-md-8">
+                            <input name="location" class="form-control" type="text" placeholder="{{user.appuser.location}}" value="{{user.appuser.location}}" required autocomplete="off"/>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="col-md-8">
+        	            <div class="alert alert-info alert-dismissable">
+        	               <i class="fa fa-info-circle" aria-hidden="true"></i> &nbsp; To <strong> save changes</strong>, Please confirm with password.
+        	            </div>
+                    </div>
+                    <br/>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Confirm password:</label>
+                        <div class="col-md-8">
+                            <input class="form-control" type="password" name="conf_password" required autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label"></label>
+                        <div class="col-md-8">
+                            <a href="/home/" class="btn btn-secondary pull-left"> Cancel </a> <!-- cancelBtn -->
+                            <span></span>
+                            <input type="submit" class="btn btn-success pull-right" value="Save Changes">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- end edit info -->
+
+            <div class="col-12"><hr/></div>
+
+            <!-- Change password -->
+            <div class="col-md-9">
+                <a href="#" class="change_pass_link" data-toggle="modal" data-target="#ChangePasswordModal"><i class="fa fa-key" aria-hidden="true"></i>&nbsp;Change Password</a>    
+            </div>
+
+            <!-- Modal to change password -->
+            <div class="modal fade" id="ChangePasswordModal" tabindex="-1" role="dialog" aria-labelledby="ChangePasswordModal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <form action="{% url 'app:change_password' %}" method="POST" enctype="multipart/form-data" >
+                            {% csrf_token %}
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Change Password</h5>  
+                                </div>
+                                <div class="modal-body">
+                                    <div class="container">
+                                        <div class="form-group">
+                                            <label class="col-md-12 control-label">Current Password:</label>
+                                            <div class="col-md-12">
+                                                <input id="current_password" class="form-control" type="password" name="current_password" placeholder="Enter Current Password" required autocomplete="off"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-12 control-label">New Password:</label>
+                                            <div class="col-md-12">
+                                                <input id="new_password" class="form-control" type="password" name="new_password" placeholder="Enter New Password" required autocomplete="off"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-12 control-label">Confirm New Password:</label>
+                                            <div class="col-md-12">
+                                                <input id="confirm_new_password" class="form-control" type="password" name="confirm_new_password" placeholder="Confirm New Password" required autocomplete="off"/>
+                                                <span id='message'></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <div class="container">
+                                        <div class="form-group">
+                                            <div class="col-md-12">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button> <!-- cancelBtn -->
+                                                <input type="submit" class="btn btn-success enableOnMatch pull-right" value="Save Changes" disabled='disabled'>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- End modal to change conf_password -->
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block endimports %}
+<!-- Preview Image Before Uploading (Profile Pic) -->
+<script>
+    var loadFile = function(event) {
+        var output = document.getElementById('output');
+        output.src = URL.createObjectURL(event.target.files[0]);
+        document.getElementById('uploadBTN').style.display = 'inline-block';
+    };
+</script>
+
+<!-- Check if passwords are same -->
+<script>
+    $('#new_password, #confirm_new_password').on('keyup', function () {
+        if ($('#new_password').val() == $('#confirm_new_password').val()) {
+            $('#message').html('').css('color', 'green');
+        } else
+            $('#message').html('Passwords do not match').css('color', 'red');
+    });
+    $('#new_password, #confirm_new_password').on('keyup', function () {
+        if ($('#new_password').val() == $('#confirm_new_password').val()) {
+            $('.enableOnMatch').prop('disabled', false);
+        } else
+            $('.enableOnMatch').prop('disabled', true);
+    });
+</script>
+{% endblock endimports %}

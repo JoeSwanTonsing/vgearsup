@@ -1,0 +1,214 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Vgearsup - Auctions</title>
+{% endblock %}
+
+{% block head %}
+<style type="text/css">
+	.spc{
+		height:10px;
+	}
+	.mobileOnlySpc{
+		visibility: hidden;
+	}
+	.message{
+        position: relative;
+        top: 4rem;
+    }
+    .hide{
+        display: none;
+    }
+    .auctionsContainerheader{
+        border-radius: 0.5rem;
+        margin-top: 7%;
+        padding: 3%;
+        background: #ffffff;
+    }
+    .auction_item_image{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        border-top-left-radius: 0.5rem;
+        border-bottom-left-radius: 0.5rem;
+    }
+
+    .auc_item{
+        border-radius:0.5rem;
+        background: #ffffff;
+    }
+
+    .auc_img_container{
+        padding: 0px;
+    }
+
+    .padding_auc_item_details{
+        padding: 1rem;
+    }
+
+    .border_left{
+        border-left: 1px solid #0000001a;
+    }
+
+    .myhr{
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        border: 0;
+        border-top: 1px solid rgba(0,0,0,.1);
+    }
+
+    .nomargin_bot{
+        margin-bottom: 0px; 
+    }
+
+    textarea{
+        resize: none;
+    }
+
+
+	@media (max-width: 767px){
+		.mobileOnlySpc{
+			visibility: visible;
+			height: 10px;
+		}
+	}
+</style>
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+    <div class="spc"></div>
+    <div class="message">
+    	{% for message in messages %}
+      		<div class="alert {{ message.tags }} alert-dismissible" role="alert">
+        		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          			<span aria-hidden="true">&times;</span>
+        		</button>
+        		{{ message }}
+      		</div>
+    	{% endfor %}
+    </div>
+
+    <div class="container auctionsContainerheader">
+        <div class="row">
+            <div class="col-12">
+                <h3 class="text-center">Auctions</h3>
+                <p> Welcome to Auctions. Here you can see ADs posted by other sellers and then place you bid on the items. There are no limitations to how much you can bid. However, all bids must be done before the end of the period. Each ad item in auctions have a time limit so be sure to place your bid on time.</p>
+                <!-- <hr> -->
+            </div>
+        </div>
+    </div>
+    <div class="spc" style="height: 2rem;"></div>
+    <div class="container">
+        {% for i in items %}
+            <div class="row auc_item">
+                <div class="col-sm-12 col-md-3 auc_img_container">
+                    <img src="{{i.photo.url}}" class="img-responsive auction_item_image" alt="Test Item">
+                </div>
+                <div class="col-sm-12 col-md-9 padding_auc_item_details">
+                    <h4><a href="{% url 'app:viewauction' i.id %}" title="View Item">{{i.name}}</a></h4>
+                    <hr/>
+                    <div class="col-sm-6 col-md-7 pull-left">
+                        <p class="nomargin_bot">
+                            Brand:&nbsp;<strong>{{i.brand}}</strong>, Category:&nbsp;<strong>{{i.category}}</strong>
+                            <br/>
+                            Item Posted by:&nbsp;<strong><a href="{% url 'app:user_information' i.seller.id %}" title="Visit Seller's Profile">{{i.seller}}</a></strong>
+                            <br/>
+                            Posted On:&nbsp;<strong>{{i.timestamp|date:"d M Y"}}</strong>
+                            <br/>
+                            <label for="auc_ad_desc">Description:</label>
+                            <textarea class="form-control" rows="5" id="auc_ad_desc" readonly>{{i.description}}</textarea>
+                        </p>
+                    </div>
+                    <div class="col-sm-6 col-md-5 pull-right border_left">
+                        <!-- <hp class="text-center">
+                            Bidding for this item ends on: <strong>{{i.bid_end|date:"d M Y"}}</strong>
+                        </hp> -->
+                        <input type="text" readonly value="{{i.bid_end}}" id="start_time">
+                        <p>
+                            Starting Price:&nbsp;<i class="fa fa-inr" aria-hidden="true"></i><strong><span class="bid_start">{{i.price}}</span></strong>
+                            <br/>
+                            Highest Bid:&nbsp;<i class="fa fa-inr" aria-hidden="true"></i><strong><span class="bid_highest">{{i.highest_bid_amount}}</span></strong>
+                            <br/>
+                            Bidder:&nbsp;<strong><span class="bid_highest_bidder"><a href="" title="View John Doe's Profile">{{i.highest_bidder}}</a></span></strong>
+                        </p>
+                        <p>
+                            <!-- <strong>Time Left: <span class="hours">24</span>h:<span class="minutes">36</span>m:<span class="seconds">03</span>s</strong> -->
+                            <strong>Time Left: {{i.bid_end|timeuntil}}</strong>
+                        </p>
+                        <p>
+                            <form action="{% url 'app:auction_bid_action' i.id %}" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="form-group nomargin_bot">
+                                    <label>Enter Bid Amount:</label>
+                                    <input name="bid_amount" type="number" placeholder="Enter bid amount" autocomplete="off"/>
+                                    <button type="submit" id="place_bid_btn" class="btn btn-success">Place Bid!</button>
+                                </div>
+                                <div class="form-group">
+                                    
+                                </div>
+                            </form>
+                        </p>
+                    </div>
+                    
+                </div>
+            </div>
+            <br/>
+        {% endfor %}
+
+
+        
+
+
+        
+
+    </div>
+{% endblock %}
+
+{% block endimports %}
+
+<!-- Counter for remaining time -->
+<script>
+
+var timer;
+var startdate= document.getElementById("start_time")
+var compareDate = startdate.value
+compareDate.setDate(compareDate.getDate() + 7); //just for this demo today + 7 days
+
+timer = setInterval(function() {
+  timeBetweenDates(compareDate);
+}, 1000);
+
+function timeBetweenDates(toDate) {
+  var dateEntered = toDate;
+  var now = new Date();
+  var difference = dateEntered.getTime() - now.getTime();
+
+  if (difference <= 0) {
+
+    // Timer done
+    clearInterval(timer);
+  
+  } else {
+    
+    var seconds = Math.floor(difference / 1000);
+    var minutes = Math.floor(seconds / 60);
+    var hours = Math.floor(minutes / 60);
+    var days = Math.floor(hours / 24);
+
+    hours %= 24;
+    minutes %= 60;
+    seconds %= 60;
+
+    $(".days").text(days);
+    $(".hours").text(hours);
+    $(".minutes").text(minutes);
+    $(".seconds").text(seconds);
+  }
+}
+</script>
+{% endblock endimports %}

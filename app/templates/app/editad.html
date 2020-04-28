@@ -1,0 +1,130 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block title %}
+   <title>VGearsup -{{request.user.username}}</title>
+{% endblock %}
+
+{% block head %}
+   <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}">
+   <style>
+   .hide {
+        display: none;
+    }
+    .myads_pic{
+        width: 100%;
+        height: 9rem;
+        object-fit: cover;
+    }
+
+    .warning{
+        color: #dc3545;
+    }
+
+    #upload-photo {
+        opacity: 0;
+        position: absolute;
+        z-index: -1;
+    }
+
+    #upload-image {
+        opacity: 0;
+        position: absolute;
+        z-index: -1;
+    }
+
+    .image_preview{
+        width: 150px;
+        height: 150px;
+        object-fit: contain;
+        object-position: center;
+    }
+
+    .red{
+        color: red;
+    }
+   </style>
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+<div class="message">
+   {% for message in messages %}
+   <div class="alert{{message.tags}}alert-dismissible" role="alert"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>{{message}}</div>
+   {% endfor %}
+</div>
+<div style="height: 5rem;"></div>
+<div class="container advert-posting">
+   <div class="col-md-7" style="margin: 0 auto;">
+      <div class="form-area">
+         <form role="form" method="post" action="{% url 'app:editad_action' instrument.id %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <br style="clear:both"> 
+            <h3 style="margin-bottom: 25px; text-align: center;">Edit {{instrument.name}}'s details</h3>
+            <!-- <p> You can not only buy instruments from VGearsup, you can also sell your new or unused instruments. Hit the button below to start selling. Before you can post and start selling your instruments, please provide some information about the item.</p> -->
+            <div class="form-group">
+               <label for="name">Name: </label>
+               <input type="text" class="form-control" id="name" name="name" placeholder="{{instrument.name}}" required value="{{instrument.name}}"> </div>
+            <div class="form-group">
+               <label for="inst_br">Select the brand/make of the item:</label> 
+               <select name="inst_br" id="inst_br">
+                  {% for b in brands %}
+                  <option value="{{b.id}}">{{b.name}}</option>
+                  {% endfor %}
+               </select>
+               <br><a href="#" class="addnewstufflink" data-toggle="modal" data-target="#addBrand"> or You can <strong> add new brand here </strong></a> 
+            </div>
+            <div class="form-group">
+               <label for="inst_cat">Select the category/type of the Instrument:</label> 
+               <select name="inst_cat" id="inst_cat">
+                  {% for c in categories %}
+                  <option value="{{c.id}}">{{c.title}}</option>
+                  {% endfor %}
+               </select>
+               <br><a href="#" class="addnewstufflink" data-toggle="modal" data-target="#addCategory"> or You can <strong> add new category here</strong></a> 
+            </div>
+            <div class="form-group">
+               <label for="description">Description: </label> 
+               <textarea class="form-control" type="textarea" name="description" id="description" placeholder="Please give a brief description of the item" maxlength="150" rows="7">{{instrument.description}}</textarea>
+               <span class="help-block">
+                  <p id="characterLeft" class="help-block">You have reached the limit</p>
+               </span>
+            </div>
+            <div class="form-group">
+               <label for="preview">Current Item's image: (Click on Change Image to change)</label> <br/>
+               <img src="{{instrument.photo.url}}" id="preview" class="image_preview"/> <br/>
+               <input type="file" name="inst_photo" id="upload-image" accept="image/*" onchange="loadImage(event)">
+               <label for="upload-image" class="btn btn-secondary">Change Image</label>
+            </div>
+            <div class="form-group">
+               <p> What is the condition of the item?</p>
+               <div class="radio"> <label><input type="radio" name="item_cond" value="Used" checked> &nbsp; Used</label> </div>
+               <div class="radio"> <label><input type="radio" name="item_cond" value="New"> &nbsp; New</label> </div>
+            </div>
+            <div class="form-group"> <label for="price">Price: (Regular AD / Auction Post)</label> <input type="number" class="form-control" id="price" name="price" placeholder="Price you are selling it for" required value="{{instrument.price}}"> </div>
+            <div class="form-group"> <button type="reset" id="csh" name="submit" class="btn btn-danger pull-left">Cancel</button> <button type="submit" id="submit" name="submit" class="btn btn-success pull-right">Update AD</button> </div>
+         </form>
+      </div>
+   </div>
+</div>
+{% endblock %}
+
+{% block endimports %}
+<!-- Preview Image Before Uploading (AD Image) -->
+<script>
+    var loadImage = function(event) {
+        var prev = document.getElementById('preview');
+        prev.src = URL.createObjectURL(event.target.files[0]);
+    };
+</script>
+
+<!-- Preview Image Before Uploading (Category Image) -->
+<script>
+    var loadFile = function(event) {
+        var output = document.getElementById('output');
+        output.src = URL.createObjectURL(event.target.files[0]);
+    };
+</script>
+{% endblock %}
