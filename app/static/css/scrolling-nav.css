@@ -1,0 +1,221 @@
+/*!
+ * Start Bootstrap - Scrolling Nav (https://startbootstrap.com/template-overviews/scrolling-nav)
+ * Copyright 2013-2017 Start Bootstrap
+ * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-scrolling-nav/blob/master/LICENSE)
+ */
+
+/*@import url('https://fonts.googleapis.com/css?family=Oleo+Script:400,700');
+@import url('https://fonts.googleapis.com/css?family=Lobster');*/
+/*@import url(https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);*/
+/*@import url('https://fonts.googleapis.com/css?family=Oxygen:400,700');*/
+
+/* GOOGLE FONTS */
+@import url("../fonts/stylesheet.css");
+
+
+
+body{
+	background-color: #343a40;
+  font-family: 'oxygenregular', sans-serif;
+}
+
+header {
+  padding: 154px 0 100px;
+}
+
+@media (min-width: 992px) {
+  header {
+    padding: 156px 0 100px;
+  }
+}
+
+section {
+  padding: 50px 0;
+  background-color: #fff;
+}
+
+
+
+/*================================================================*/
+/*============== CUSTOM CSS FROM HERE ============================*/
+/*================================================================*/
+
+.bg-pri{
+  background-color: #343a40;
+}
+.headTitle{
+}
+
+.Tusername{
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.Titlelogo{
+	font-family: 'oleo_scriptregular', cursive;
+}
+
+.headSub{
+	font-family: 'lobsterregular', cursive;
+}
+
+.category_image{
+	width: 80px;
+	height: 80px;
+}
+
+.cat_image{
+	margin-bottom: 5px;
+}
+
+.cat_title{
+	margin-top: 5px;
+}
+
+.category_item{
+	padding: 10px;
+	margin-top: 5px;
+	text-align: center;
+}
+
+.category_image{
+}
+
+.login_reg_header{
+  background-image:url('../images/headerImg2.jpg');
+  background-position: center;
+  background-size: cover;
+}
+
+.index_header{
+  background-image:url('../images/headerImg.jpg');
+  background-position: center;
+  background-size: cover;
+}
+
+.dropdown-item:active{
+    background: #1ab188;
+}
+
+
+/* For Error Messages */
+.alert{
+  margin-bottom: 0px;
+  border-radius: 0px;
+}
+
+.error{
+  position: relative;
+  padding: .75rem 1.25rem;
+  border: 1px solid transparent;
+  background: #ef6774;
+  color: #fff;
+  text-align: center;
+  font-weight: 600;
+}
+
+.success{
+  position: relative;
+  padding: .75rem 1.25rem;
+  border: 1px solid transparent;
+  background: #1ab188;
+  color: #fff;
+  text-align: center;
+  font-weight: 600;
+}
+
+
+
+
+/*For Searchbar*/
+.search {
+  width: 100%;
+  position: relative;
+}
+
+#search{
+  padding-bottom: 0px;
+}
+
+.searchTerm {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 100%;
+  border: 3px solid #1ab188;
+  padding: 5px;
+  height: 40px;
+  border-radius: 5px;
+  outline: none;
+}
+
+.searchButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  opacity: 0;
+  cursor: pointer;
+}
+
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
+
+
+/* For Page Scroll */
+#return-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgb(0, 0, 0);
+    background: rgba(0, 0, 0, 0.7);
+    width: 50px;
+    height: 50px;
+    display: block;
+    text-decoration: none;
+    -webkit-border-radius: 35px;
+    -moz-border-radius: 35px;
+    border-radius: 35px;
+    display: none;
+    -webkit-transition: all 0.3s linear;
+    -moz-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+#return-to-top i {
+    color: #fff;
+    margin: 0;
+    position: relative;
+    left: 16px;
+    top: 13px;
+    font-size: 19px;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+#return-to-top:hover {
+    background: rgba(0, 0, 0, 0.9);
+}
+#return-to-top:hover i {
+    color: #fff;
+    top: 5px;
+}
